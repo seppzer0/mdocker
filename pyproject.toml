@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "mdocker"
+version = "0.1.0"
+description = "A wrapper for multiplatform Docker image builds"
+authors = ["seppzer0 <seppzerr0@gmail.com>"]
+readme = "README.md"
+packages = [{include = "mdocker"}]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+argparse = "^1.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
