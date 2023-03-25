@@ -10,7 +10,7 @@ mdocker takes some of the arguments used standard Docker Buildx argument list.
 
 ```help
 $ python3 -m mdocker --help
-usage: __main__.py [-h] [--context CONTEXT] [--dockerfile DOCKERFILE] [--platform PLATFORM] [--upload] [--clean]
+usage: __main__.py [-h] [--context CONTEXT] [--file DOCKERFILE] [--platform PLATFORM] [--push] [--clean]
                    name
 
 positional arguments:
@@ -19,10 +19,9 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --context CONTEXT     define path to build context
-  --dockerfile DOCKERFILE
-                        define path to Dockerfile
+  --file FILE           define path to Dockerfile
   --platform PLATFORM   select platforms to build Docker image for (e.g., --platform linux/amd64,linux/arm64)
-  --upload              upload image to remote registry
+  --push                push image to remote registry
   --clean               clean cache after the build
 ```
 
@@ -33,3 +32,7 @@ To install and debug mdocker locally, in the root of repository use:
 ```sh
 python3 -m pip install -e .
 ```
+
+## See also
+
+- [TODO List](TODO.md)

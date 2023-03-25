@@ -9,7 +9,7 @@ on:
       enabledTest:
         description: "Select whether the package should be tested"
         required: true
-        default: "true"
+        default: "false"
         type: choice
         options:
           - "true"
@@ -23,8 +23,12 @@ on:
           - "true"
           - "false"
 
+env:
+  ENABLED_TEST: ${{ github.event.inputs.enabledTest || "false" }}
+  ENABLED_UPLOAD: ${{ github.event.inputs.enabledUpload || "true" }}
+
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,30 +38,6 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install Build Requirements
-        run: python3 -m pip install --upgrade poetry
-      - name: Build
-        run: python3 -m poetry build
-  test:
-    runs-on: ubuntu-latest
-    if: "${{ inputs.enabledTest }}" == "true"
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-      - name: Install Build Requirements
-        run: python3 -m pip install --upgrade poetry pytest
-      - name: Test
-        run: python3 -m poetry run pytest tests/unit
-  upload:
-    runs-on: ubuntu-latest
-    if: "${{ inputs.enabledUpload }}" == "true"
-    needs: [build, test]
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v4
-      - name: Install Build Requirements
-        run: python3 -m pip install --upgrade twine
-      - name: Upload
-        run: python3 -m twine upload --non-interactive -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PWD }} --repository-url https://pypi.org/ dist/*
+        run: python3 -m pip install --upgrade poetry twine argparse pytest
+      - name: Build, Test, Upload
+        run: python3 cicd.py --test ${{ env.ENABLED_TEST }} --upload ${{ env.ENABLED_UPLOAD }} -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PWD }}

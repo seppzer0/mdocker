@@ -14,14 +14,14 @@ def parse_args():
     parser.add_argument("--context",
                         default=".",
                         help="define path to build context")
-    parser.add_argument("--dockerfile",
+    parser.add_argument("--file",
                         default=".{}Dockerfile".format(os.sep),
                         help="define path to Dockerfile")
     parser.add_argument("--platform",
                         help="select platforms to build Docker image for (e.g., --platform linux/amd64,linux/arm64)")
-    parser.add_argument("--upload",
+    parser.add_argument("--push",
                         action="store_true",
-                        help="upload image to remote registry")
+                        help="push image to remote registry")
     parser.add_argument("--clean",
                         action="store_true",
                         help="clean cache after the build")
@@ -38,7 +38,6 @@ def cmdd(cmd, quiet=False, dont_exit=False):
     rc = subprocess.run(cmd, shell=True, stdout=cstdout, stderr=subprocess.STDOUT).returncode
     if rc != 0:
         msg.error("Could not launch: {}".format(cmd), dont_exit)
-    #return rc
 
 
 def validate():
@@ -72,7 +71,6 @@ else:
     os = "linux"
     arch = subprocess.check_output("uname -m", shell=True).decode("utf-8").splitlines()[0].lower()
     platforms = [os + "/" + arch]
-    #print("".join(platforms), end="\n")
 for platform in platforms:
     # substitude x86_64 with amd64
     if "x86_64" in platform:
@@ -84,7 +82,7 @@ for platform in platforms:
     commands = [
         "docker buildx create --use --name multi --platform {} --driver-opt network=host".format(platform),
         "docker buildx build --no-cache --platform {} --load -f {} {} -t {}".format(platform,
-                                                                                    args.dockerfile,
+                                                                                    args.file,
                                                                                     args.context,
                                                                                     tag),
         "docker buildx stop multi && docker buildx rm multi",
@@ -92,14 +90,12 @@ for platform in platforms:
     ]
     for cmd in commands:
         cmdd(cmd)
-    # [optional] upload image to registry
-    if args.upload:
+    # [optional] push image to registry
+    if args.push:
         cmdd("docker push {}".format(tag))
 # [optional] clean Docker cache
 if args.clean:
-    images = [
-        "moby/buildkit:buildx-stable-1"
-        ]
+    images = ["moby/buildkit:buildx-stable-1"]
     # add built images to cleanup list
     for platform in platforms:
         images.append(args.name + ":" + platform.split("/")[1].replace("x86_64", "amd64"))
