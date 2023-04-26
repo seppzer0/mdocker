@@ -4,7 +4,9 @@ import subprocess
 
 
 def parse_args():
-    """Parse arguments."""
+    """
+    Parse arguments.
+    """
     global args
     parser = argparse.ArgumentParser()
     parser.add_argument("--test",
@@ -22,14 +24,18 @@ def parse_args():
 
 
 def validate_args():
-    """Validate specified arguments."""
+    """
+    Validate specified arguments.
+    """
     if (args.upload and args.upload.lower() == "true") and not (args.username and args.password):
         print("[ ! ] Upload enabled but no credentials passed.")
         sys.exit(1)
 
 
 def ccmd(cmd):
-    """Custom cmd wrapper."""
+    """
+    Custom cmd wrapper.
+    """
     print(f"[cmd] {cmd}")
     rc = subprocess.run(cmd, shell=True).returncode
     if rc != 0:
@@ -37,18 +43,39 @@ def ccmd(cmd):
         sys.exit(1)
 
 
+def install_deps(test_enabled):
+    """
+    Install proper dependencies.
+
+    :param bool test_enabled: Specify whether dev dependencies are required for tests.
+    """
+    cmd = "python3 -m poetry install --no-root"
+    if not test_enabled:
+        cmd += " --without dev"
+    ccmd(cmd)
+
+
 def build():
-    """Build the pip module."""
+    """
+    Build the pip module.
+    """
     ccmd("python3 -m poetry build")
 
 
 def test():
-    """Test the pip module."""
+    """
+    Test the pip module.
+    """
     ccmd("python3 -m pytest tests")
 
 
 def upload(usr, pswd):
-    """Upload the pip module."""
+    """
+    Upload the pip module.
+    
+    :param str usr: Username for the repo.
+    :param str pswd: Password for the repo.
+    """
     ccmd(f"python3 -m twine upload -u {usr} -p {pswd} -r pypi --repository-url https://upload.pypi.org/legacy/ dist/*")
 
 
