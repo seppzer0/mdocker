@@ -3,7 +3,9 @@ import os
 import sys
 import argparse
 import subprocess
+
 import mdocker.tools.messages as msg
+from mdocker.tools.commands import cmdd
 
 
 def parse_args():
@@ -15,7 +17,7 @@ def parse_args():
                         default=".",
                         help="define path to build context")
     parser.add_argument("--file",
-                        default=".{}Dockerfile".format(os.sep),
+                        default=f".{os.sep}Dockerfile",
                         help="define path to Dockerfile")
     parser.add_argument("--platform",
                         help="select platforms to build Docker image for (e.g., --platform linux/amd64,linux/arm64)")
@@ -29,17 +31,6 @@ def parse_args():
     args = parser.parse_args()
 
 
-def cmdd(cmd, quiet=False, dont_exit=False):
-    """A simple (Docker) command wrapper."""
-    if not quiet:
-        msg.cmd(cmd)
-    # determine stdout
-    cstdout = subprocess.DEVNULL if quiet else None
-    rc = subprocess.run(cmd, shell=True, stdout=cstdout, stderr=subprocess.STDOUT).returncode
-    if rc != 0:
-        msg.error("Could not launch: {}".format(cmd), dont_exit)
-
-
 def validate():
     """Check and validate build environment."""
     # try calling "buildx" directly
@@ -48,7 +39,7 @@ def validate():
     except Exception as e:
         # attempt to enable buildx via environment variable
         msg.note("Attempting to enable buildx via environment variable..")
-        os.environ["DOCKER_BUILDKIT=1"]
+        os.environ["DOCKER_BUILDKIT"] = "1"
         cmdd("docker buildx version", quiet=True)
         print("[ + ] Done!")
 
@@ -58,7 +49,8 @@ parse_args()
 sys.stdout = io.TextIOWrapper(open(sys.stdout.fileno(), 'wb', 0), write_through=True)
 validate()
 # just in case, remove potentially existing "multi" builder
-cmdd("docker buildx stop multi && docker buildx rm multi", quiet=True, dont_exit=True)
+cmdd("docker buildx stop multi", quiet=True, dont_exit=True)
+cmdd("docker buildx rm multi", quiet=True, dont_exit=True)
 msg.note("Launching multiarch Docker image build..")
 # form platform list (including default value) and launch the build
 platforms = []
@@ -69,7 +61,7 @@ else:
     print("\n")
     msg.note("Using host arch as default target..")
     os = "linux"
-    arch = subprocess.check_output("uname -m", shell=True).decode("utf-8").splitlines()[0].lower()
+    arch = subprocess.check_output(["uname", "-m"]).decode("utf-8").splitlines()[0].lower()
     platforms = [os + "/" + arch]
 for platform in platforms:
     # substitude x86_64 with amd64
@@ -77,7 +69,7 @@ for platform in platforms:
         msg.note("Substituding x86_64 with amd64")
         platform = platform.replace("x86_64", "amd64")
     print("\n")
-    msg.note("Building for platform: {}".format(platform))
+    msg.note(f"Building for platform: {platform}")
     tag = args.name + ":" + platform.split("/")[1]
     commands = [
         "docker buildx create --use --name multi --platform {} --driver-opt network=host".format(platform),
@@ -85,7 +77,8 @@ for platform in platforms:
                                                                                     args.file,
                                                                                     args.context,
                                                                                     tag),
-        "docker buildx stop multi && docker buildx rm multi",
+        "docker buildx stop multi",
+        "docker buildx rm multi",
         "docker buildx prune --force"
     ]
     for cmd in commands:

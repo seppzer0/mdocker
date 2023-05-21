@@ -40,4 +40,4 @@ jobs:
       - name: Install Build Requirements
         run: python3 -m pip install --upgrade poetry twine argparse pytest
       - name: Build, Test, Upload
-        run: python3 cicd.py --test ${{ env.ENABLED_TEST }} --upload ${{ env.ENABLED_UPLOAD }} -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PWD }}
+        run: python3 scripts/cicd.py --test ${{ env.ENABLED_TEST }} --upload ${{ env.ENABLED_UPLOAD }} -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PWD }}
