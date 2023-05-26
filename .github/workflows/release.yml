@@ -24,8 +24,8 @@ on:
           - "false"
 
 env:
-  ENABLED_TEST: ${{ github.event.inputs.enabledTest || "false" }}
-  ENABLED_UPLOAD: ${{ github.event.inputs.enabledUpload || "true" }}
+  ENABLED_TEST: ${{ github.event.inputs.enabledTest || 'false' }}
+  ENABLED_UPLOAD: ${{ github.event.inputs.enabledUpload || 'true' }}
 
 jobs:
   release:
