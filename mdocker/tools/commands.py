@@ -1,8 +1,10 @@
 import subprocess
+from typing import Union
+
 import mdocker.tools.messages as msg
 
 
-def cmdd(cmd: str, quiet: bool = False, dont_exit: bool = False):
+def launch(cmd, quiet=False, dont_exit=False, get_output=False) -> Union[None, str]:
     """A simple (Docker) command wrapper.
 
     :param str cmd: A command that is being executed.
@@ -13,7 +15,12 @@ def cmdd(cmd: str, quiet: bool = False, dont_exit: bool = False):
         msg.cmd(cmd)
     # determine stdout
     cstdout = subprocess.DEVNULL if quiet else None
+    if get_output is True:
+        cstdout = subprocess.PIPE
     try:
-        subprocess.run(cmd.split(" "), check=True, stdout=cstdout, stderr=subprocess.STDOUT)
+        result = subprocess.run(cmd, shell=True, check=True, stdout=cstdout, stderr=subprocess.STDOUT)
+        # return only output if required
+        if get_output is True:
+            return result.stdout.decode('utf-8').splitlines()[0]
     except Exception:
-        msg.error(f"Could not launch: {cmd}", dont_exit)
+        msg.error(f"Error executing command: {cmd}")
