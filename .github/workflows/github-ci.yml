@@ -16,7 +16,6 @@ on:
           - "false"
 
 env:
-  ENABLED_TEST: ${{ github.event.inputs.enabledTest || 'false' }}
   ENABLED_UPLOAD: ${{ github.event.inputs.enabledUpload || 'true' }}
 
 jobs:
@@ -26,12 +25,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Test
-        run: docker build . -t mdocker
+        run: docker build . --no-cache -t ${GITHUB_REPOSITORY,,}
       - name: Build And Upload
         run: |
           if [ "${{ env.ENABLED_UPLOAD }}" == "true"  ] && [ "${GITHUB_REF##*/}" == "main" ]; then
             CMD="python3 -m poetry build && python3 -m twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PWD }} -r pypi --repository-url https://upload.pypi.org/legacy/ dist/* --skip-existing"
-            docker run --rm -i mdocker /bin/sh -c "${CMD}"
+            docker run --rm -i ${GITHUB_REPOSITORY,,} /bin/sh -c "${CMD}"
           else
             echo "[ * ] Upload skipped.."
           fi
