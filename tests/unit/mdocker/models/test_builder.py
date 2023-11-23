@@ -9,7 +9,7 @@ from mdocker.models.builder import ImageBuilder
 )
 class TestGenPlatforms:
 
-    """A grouping class for testing the _gen_platforms() static method."""
+    """A grouping class for testing the _gen_platforms() method."""
 
     def test__gen_platforms__same_amount(self, platforms_string: str) -> None:
         """Test the amount of generated platforms."""
