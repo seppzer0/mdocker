@@ -1,0 +1,37 @@
+name: Test, Build And Upload
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      enabledUpload:
+        description: "Select whether the package should be uploaded"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+env:
+  ENABLED_TEST: ${{ github.event.inputs.enabledTest || 'false' }}
+  ENABLED_UPLOAD: ${{ github.event.inputs.enabledUpload || 'true' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test
+        run: docker build . -t mdocker
+      - name: Build And Upload
+        run: |
+          if [ "${{ env.ENABLED_UPLOAD }}" == "true"  ] && [ "${GITHUB_REF##*/}" == "main" ]; then
+            CMD="python3 -m poetry build && python3 -m twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PWD }} -r pypi --repository-url https://upload.pypi.org/legacy/ dist/*"
+            docker run --rm -i mdocker /bin/bash -c "${CMD}"
+          else
+            echo "[ * ] Upload skipped.."
+          fi
