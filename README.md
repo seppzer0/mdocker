@@ -1,6 +1,6 @@
 # mdocker
 
-A wrapper for multiplatform Docker image builds.
+A easy-to-use wrapper for multiplatform Docker image builds.
 
 ## Contents
 
