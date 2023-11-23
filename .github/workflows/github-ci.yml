@@ -31,7 +31,7 @@ jobs:
         run: |
           if [ "${{ env.ENABLED_UPLOAD }}" == "true"  ] && [ "${GITHUB_REF##*/}" == "main" ]; then
             CMD="python3 -m poetry build && python3 -m twine upload -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_PWD }} -r pypi --repository-url https://upload.pypi.org/legacy/ dist/*"
-            docker run --rm -i mdocker /bin/bash -c "${CMD}"
+            docker run --rm -i mdocker /bin/sh -c "${CMD}"
           else
             echo "[ * ] Upload skipped.."
           fi
