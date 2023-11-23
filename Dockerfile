@@ -4,6 +4,7 @@ COPY mdocker /opt/mdocker
 COPY pyproject.toml /opt
 COPY poetry.lock /opt
 COPY tests /opt/tests
+COPY README.md /opt
 
 ENV PYTHONPATH /opt
 WORKDIR /opt
