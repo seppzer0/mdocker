@@ -63,7 +63,4 @@ def test__gen_docker_cmds__check(config: dict[str, any], res_expected: list[str]
     """Check the list of returned "docker buildx" commands."""
     instance = ImageBuilder(config)
     res_actual = instance._gen_docker_cmds()
-    print(res_actual)
-    print("\n")
-    print(res_expected)
     assert res_expected == res_actual
