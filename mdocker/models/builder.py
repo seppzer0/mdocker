@@ -15,10 +15,17 @@ class ImageBuilder:
         self._push = config.get("push", False)
         self._platforms_string = config.get("platform", None)
 
-    def _clear_builder_instance(self) -> None:
-        """Create a temporary Buildx instance."""
+    def _builder_instance_clear(self) -> None:
+        """Clear the builder instance from the host machine."""
         ccmd.launch(f"docker buildx stop {self._instance}", quiet=True, dont_exit=True)
         ccmd.launch(f"docker buildx rm {self._instance}", quiet=True, dont_exit=True)
+        ccmd.launch(
+            "docker buildx create --use --name {} --platform {} --driver-opt network=host"\
+            .format(self._instance, self._platforms)
+        )
+    
+    def _builder_instance_create(self) -> None:
+        """Create new builder instance."""
         ccmd.launch(
             "docker buildx create --use --name {} --platform {} --driver-opt network=host"\
             .format(self._instance, self._platforms)
@@ -63,7 +70,9 @@ class ImageBuilder:
     def run(self) -> None:
         """Run the image building process."""
         msg.note("Launching multiplatform Docker image build..")
-        self._clear_builder_instance()
+        self._builder_instance_clear()
+        self._builder_instance_create()
         for cmd in self._gen_docker_cmds():
             ccmd.launch(cmd)
+        self._builder_instance_clear()
         msg.done("Multiarch Docker image build finished!")
