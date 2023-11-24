@@ -33,7 +33,6 @@ class TestGenPlatforms:
                 "push": False,
             },
             [
-                "docker buildx create --use --name multi_instance --platform linux/amd64 --driver-opt network=host",
                 "docker buildx build --no-cache --platform linux/amd64 --load -f Dockerfile . -t mdocker-test:amd64",
                 "docker buildx stop multi_instance",
                 "docker buildx rm multi_instance",
@@ -49,7 +48,6 @@ class TestGenPlatforms:
                 "platform": "linux/x86_64"
             },
             [
-                "docker buildx create --use --name multi_instance --platform linux/amd64 --driver-opt network=host",
                 "docker buildx build --no-cache --platform linux/amd64 --load -f Dockerfile.test .. -t mdocker-test:amd64",
                 "docker buildx stop multi_instance",
                 "docker buildx rm multi_instance",

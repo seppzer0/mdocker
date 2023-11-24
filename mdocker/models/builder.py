@@ -17,9 +17,12 @@ class ImageBuilder:
 
     def _clear_builder_instance(self) -> None:
         """Create a temporary Buildx instance."""
-        # remove the instance from the machine, just in case
         ccmd.launch(f"docker buildx stop {self._instance}", quiet=True, dont_exit=True)
         ccmd.launch(f"docker buildx rm {self._instance}", quiet=True, dont_exit=True)
+        ccmd.launch(
+            "docker buildx create --use --name {} --platform {} --driver-opt network=host"\
+            .format(self._instance, self._platforms)
+        )
 
     @property
     def _platforms(self) -> list[str]:
@@ -44,8 +47,6 @@ class ImageBuilder:
             # only <arch> value is used in tag extension
             tag = f'{self._name}:{platform.split("/")[1]}'
             commands = [
-                "docker buildx create --use --name {} --platform {} --driver-opt network=host"\
-                    .format(self._instance, platform),
                 "docker buildx build --no-cache --platform {} --load -f {} {} -t {}"\
                     .format(platform, self._file, self._context, tag),
                 "docker buildx stop {}"\
