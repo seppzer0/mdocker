@@ -15,7 +15,7 @@ An easy-to-use wrapper for multiplatform Docker image builds.
 
 ## Description
 
-mdocker is a simple wrapper over Docker Buildx, which can be used for easy image building targeted for various platforms.
+mdocker is a simple wrapper over Docker Buildx, which can be used for easy image building targeted for multiple platforms.
 
 This tool was originally designed as a workaround to a [limitation](https://github.com/docker/buildx/issues/59) that Buildx has with the `--load` parameter.
 
