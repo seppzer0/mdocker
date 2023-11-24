@@ -19,6 +19,8 @@ mdocker is a simple wrapper over Docker Buildx, which can be used for easy image
 
 This tool was originally designed as a workaround to a [limitation](https://github.com/docker/buildx/issues/59) that Buildx has with the `--load` parameter.
 
+***Note**: There are, however, some [workarounds and progress](https://github.com/docker/roadmap/issues/371) towards this issue.*
+
 So, the amount of target platforms specified for this wrapper will be equal to the amount of tags generated in local cache.
 
 E.g., if `linux/arm64` and `linux/amd64` were specified as target platforms for a `demo` image, you will get `demo:arm64` and `demo:amd64` built and stored within your local Docker cache.
