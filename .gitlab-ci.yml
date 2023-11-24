@@ -10,6 +10,9 @@ job-build:
   tags:
     - docker
     - linux
+  image: docker:24.0-cli
+  services:
+    - docker:dind
   script:
     # upload process is managed by GitHub Actions;
     # here we only need to check that project has no build errors.
