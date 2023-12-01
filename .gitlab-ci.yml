@@ -30,11 +30,11 @@ job-tag:
     - USERNAME=$CUSTOM_CI_USERNAME
     - PASSWORD=$CUSTOM_CI_PASSWORD
     - EMAIL=$CUSTOM_CI_EMAIL
-    - TAGNAME=$(sh scripts/get_version.sh)
+    - TAGNAME=v$(sh scripts/get_version.sh)
     - git config --global user.name "${USERNAME}"
     - git config --global user.email "${EMAIL}"
     - git remote remove origin
-    - git remote add origin https://${USERNAME}:${PASSWORD}@gitlab.com/${USERNAME}/mdocker
+    - git remote add origin https://${USERNAME}:${PASSWORD}@gitlab.com/${USERNAME}/${CI_PROJECT_PATH_SLUG}
     - if [ $(git tag | grep "$TAGNAME") ]; then echo "[ * ] Tag already exists, skipping.."; else git tag $TAGNAME && git push origin $TAGNAME; fi
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
