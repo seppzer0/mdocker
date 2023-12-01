@@ -5,6 +5,7 @@ COPY pyproject.toml /opt
 COPY poetry.lock /opt
 COPY tests /opt/tests
 COPY README.md /opt
+COPY LICENSE.md /opt
 
 ENV PYTHONPATH /opt
 WORKDIR /opt
