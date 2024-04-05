@@ -1,28 +1,7 @@
 import pytest
 
-from mdocker.models.builder import ImageBuilder
+from mdocker.models import ImageBuilder
 
-
-@pytest.mark.parametrize(
-    "platforms_string",
-    ("linux/amd64", "linux/arm64", "linux/amd64,linux/arm64", "linux/x86_64", "linux/x86_64,linux/arm64")
-)
-class TestGenPlatforms:
-
-    """A grouping class for testing the _gen_platforms() method."""
-
-    def test__gen_platforms__same_amount(self, platforms_string: str) -> None:
-        """Test the amount of generated platforms."""
-        instance = ImageBuilder({"name": "mdocker-test", "platform": platforms_string})
-        res_expected = len(platforms_string.split(","))
-        res_actual = len(instance._platforms)
-        assert res_expected == res_actual
-
-    def test__gen_platforms__x86_64_substitution(self, platforms_string: str) -> None:
-        """Test the x86_64 -> amd64 substitution."""
-        instance = ImageBuilder({"name": "mdocker-test", "platform": platforms_string})
-        res_actual = instance._platforms
-        assert "x86_64" not in " ".join(res_actual)
 
 @pytest.mark.parametrize(
     "config, res_expected",
@@ -30,7 +9,11 @@ class TestGenPlatforms:
         (
             {
                 "name": "mdocker-test",
+                "dfile": "Dockerfile",
+                "bcontext": ".",
                 "push": False,
+                "clean": False,
+                "platforms": ["linux/amd64"]
             },
             [
                 "docker buildx build --no-cache --platform linux/amd64 --load -f Dockerfile . -t mdocker-test:amd64",
@@ -42,23 +25,29 @@ class TestGenPlatforms:
         (
             {
                 "name": "mdocker-test",
-                "file": "Dockerfile.test",
-                "context": "..",
+                "dfile": "Dockerfile.test",
+                "bcontext": "..",
                 "push": True,
-                "platform": "linux/x86_64"
+                "clean": False,
+                "platforms": ["linux/amd64", "macos/arm64"]
             },
             [
                 "docker buildx build --no-cache --platform linux/amd64 --load -f Dockerfile.test .. -t mdocker-test:amd64",
                 "docker buildx stop multi_instance",
                 "docker buildx rm multi_instance",
                 "docker buildx prune --force",
-                "docker push mdocker-test:amd64"
+                "docker push mdocker-test:amd64",
+                "docker buildx build --no-cache --platform macos/arm64 --load -f Dockerfile.test .. -t mdocker-test:arm64",
+                "docker buildx stop multi_instance",
+                "docker buildx rm multi_instance",
+                "docker buildx prune --force",
+                "docker push mdocker-test:arm64"
             ]
         )
     )
 )
-def test__gen_docker_cmds__check(config: dict[str, any], res_expected: list[str]) -> None:
+def test__gen_build_cmds__check(config: dict[str, any], res_expected: list[str]) -> None:
     """Check the list of returned "docker buildx" commands."""
-    instance = ImageBuilder(config)
-    res_actual = instance._gen_docker_cmds()
+    instance = ImageBuilder(**config)
+    res_actual = instance._gen_build_cmds()
     assert res_expected == res_actual
