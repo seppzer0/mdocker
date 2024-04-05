@@ -13,7 +13,6 @@ class ImageBuilder(BaseModel, IImageBuilder):
     :param file: Path to Dockerfile.
     :param context: Path to build context.
     :param platforms: List of target platforms.
-    :param clean: Flag to remove build Docker images from cache.
     :param push: Flag to push built Docker images to registry.
     """
 
@@ -22,7 +21,6 @@ class ImageBuilder(BaseModel, IImageBuilder):
     name: str
     dfile: Path
     bcontext: Path
-    clean: bool
     push: bool
     platforms: list[str]
 

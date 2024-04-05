@@ -12,7 +12,6 @@ from mdocker.models import ImageBuilder
                 "dfile": "Dockerfile",
                 "bcontext": ".",
                 "push": False,
-                "clean": False,
                 "platforms": ["linux/amd64"]
             },
             [
@@ -28,7 +27,6 @@ from mdocker.models import ImageBuilder
                 "dfile": "Dockerfile.test",
                 "bcontext": "..",
                 "push": True,
-                "clean": False,
                 "platforms": ["linux/amd64", "macos/arm64"]
             },
             [

@@ -72,7 +72,6 @@ def main(args: argparse.Namespace) -> None:
         bcontext=args.bcontext,
         dfile=args.dfile,
         platforms=process_platforms(args.platforms),
-        clean=args.clean,
         push=args.push
     ).run()
 
