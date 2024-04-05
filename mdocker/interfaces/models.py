@@ -3,7 +3,7 @@ from subprocess import CompletedProcess
 
 
 class IImageBuilder(ABC):
-    """An interface for building Docker images."""
+    """An interface for Docker image builder."""
 
     @abstractmethod
     def _builder_instance_clear(self) -> list[CompletedProcess | str]:
