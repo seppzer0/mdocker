@@ -1,6 +1,6 @@
 # mdocker
 
-An easy-to-use wrapper for multiplatform Docker image builds.
+An easy-to-use wrapper for multi-platform Docker image builds.
 
 ## Contents
 
@@ -33,18 +33,18 @@ Below is a help message with the description of arguments.
 
 ```help
 $ python3 -m mdocker --help
-usage:  [-h] [--context CONTEXT] [--file FILE] [--platform PLATFORM] [--push]
-        name
+usage: [-h] [--context BCONTEXT] [--file DFILE] [--platforms PLATFORMS] [--push] name
 
 positional arguments:
-  name                 specify a name for the image
+  name                  specify a name for the image
 
 options:
-  -h, --help           show this help message and exit
-  --context CONTEXT    specify a path to build context
-  --file FILE          specify a path to Dockerfile
-  --platform PLATFORM  specify target platforms (e.g., --platform linux/amd64,linux/arm64)
-  --push               push image to remote registry
+  -h, --help            show this help message and exit
+  --context BCONTEXT    specify a path to build context
+  --file DFILE          specify a path to Dockerfile
+  --platforms PLATFORMS
+                        specify target platforms (e.g., --platforms linux/amd64,linux/arm64)
+  --push                push image to remote registry
 ```
 
 ## Installation

@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "mdocker"
-version = "0.2.1"
-description = "An easy-to-use wrapper for multiplatform Docker image builds."
-keywords = ["docker", "docker-buildx"]
+version = "0.3.0"
+description = "An easy-to-use wrapper for multi-platform Docker image builds."
+keywords = ["docker", "docker-buildx", "multi-platform"]
 authors = ["seppzer0"]
 repository = "https://github.com/seppzer0/mdocker"
 readme = "README.md"

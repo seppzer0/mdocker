@@ -1,5 +1,5 @@
 import subprocess
-from typing import Union, Optional
+from typing import Optional
 
 import mdocker.tools.messages as msg
 
@@ -9,7 +9,7 @@ def launch(
         quiet: Optional[bool] = False,
         dont_exit: Optional[bool] = False,
         get_output: Optional[bool] = False
-    ) -> Union[None, str]:
+    ) -> subprocess.CompletedProcess | str | None:
     """A simple command wrapper.
 
     :param cmd: A command that is being executed.
@@ -28,7 +28,9 @@ def launch(
         result = subprocess.run(cmd, shell=True, check=True, stdout=cstdout, stderr=subprocess.STDOUT)
         # return only output if required
         if get_output is True:
-            return result.stdout.decode('utf-8').splitlines()[0]
+            return result.stdout.decode("utf-8").rstrip()
+        else:
+            return result
     except Exception:
         if not dont_exit:
             msg.error(f"Error executing command: {cmd}")

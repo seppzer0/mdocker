@@ -2,11 +2,10 @@ import os
 import io
 import sys
 import argparse
+from pathlib import Path
 
-import mdocker.tools.messages as msg
-import mdocker.tools.commands as ccmd
-
-from mdocker.models.builder import ImageBuilder
+from mdocker.tools import commands as ccmd, messages as msg
+from mdocker.models import ImageBuilder
 
 
 def parse_args() -> argparse.Namespace:
@@ -19,15 +18,21 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--context",
+        dest="bcontext",
         help="specify a path to build context"
     )
     parser.add_argument(
         "--file",
+        dest="dfile",
+        default=Path("Dockerfile"),
         help="specify a path to Dockerfile"
     )
     parser.add_argument(
-        "--platform",
-        help="specify target platforms (e.g., --platform linux/amd64,linux/arm64)"
+        "--platforms",
+        default=[
+            f"linux/{ccmd.launch('uname -m', get_output=True, quiet=True).replace('x86_64', 'amd64')}"
+        ],
+        help="specify target platforms (e.g., --platforms linux/amd64,linux/arm64)"
     )
     parser.add_argument(
         "--push",
@@ -37,7 +42,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def validate() -> None:
+def validate_env() -> None:
     """Check and validate build environment."""
     # try calling "buildx" directly
     try:
@@ -50,14 +55,26 @@ def validate() -> None:
         print("[ + ] Done!")
 
 
+def process_platforms(platforms: str | list[str]) -> list[str]:
+    """Process target platform list."""
+    if not isinstance(platforms, list):
+        return platforms.replace("x86_64", "amd64").split(",")
+    else:
+        return platforms
+
+
 def main(args: argparse.Namespace) -> None:
-    # for logs to always show in order
-    sys.stdout = io.TextIOWrapper(open(sys.stdout.fileno(), 'wb', 0), write_through=True)
-    # parse arguments and run
-    parse_args()
-    validate()
-    config = vars(args)
-    ImageBuilder(config).run()
+    # for logs to show in order in various CI/CD / Build systems
+    sys.stdout = io.TextIOWrapper(open(sys.stdout.fileno(), "wb", 0), write_through=True)
+    validate_env()
+    ImageBuilder(
+        name=args.name,
+        bcontext=args.bcontext,
+        dfile=args.dfile,
+        platforms=process_platforms(args.platforms),
+        clean=args.clean,
+        push=args.push
+    ).run()
 
 
 if __name__ == "__main__":
