@@ -6,12 +6,12 @@ class IImageBuilder(ABC):
     """An interface for building Docker images."""
 
     @abstractmethod
-    def _builder_instance_clear(self) -> list[CompletedProcess]:
+    def _builder_instance_clear(self) -> list[CompletedProcess | str]:
         """Clear the builder instance from the host machine."""
         raise NotImplementedError()
 
     @abstractmethod
-    def _builder_instance_create(self) -> CompletedProcess:
+    def _builder_instance_create(self) -> CompletedProcess | str | None:
         """Create new builder instance."""
         raise NotImplementedError()
 

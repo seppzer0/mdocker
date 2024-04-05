@@ -6,7 +6,7 @@ from mdocker.tools import commands as ccmd, messages as msg
 from mdocker.interfaces import IImageBuilder
 
 
-class ImageBuilder(BaseModel):
+class ImageBuilder(BaseModel, IImageBuilder):
     """A class for building Docker images.
 
     :param name: Docker image name.
