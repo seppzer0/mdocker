@@ -24,7 +24,6 @@ class ImageBuilder(BaseModel, IImageBuilder):
     bcontext: Path
     clean: bool
     push: bool
-    # default target platform to "linux/amd64"
     platforms: list[str]
 
     def _builder_instance_clear(self) -> list[CompletedProcess | str]:
