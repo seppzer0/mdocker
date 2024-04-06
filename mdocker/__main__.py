@@ -19,6 +19,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--context",
         dest="bcontext",
+        default=".",
         help="specify a path to build context"
     )
     parser.add_argument(
