@@ -12,6 +12,7 @@ An easy-to-use wrapper for multi-platform Docker image builds.
     - [From PyPI (recommended)](#from-pypi-recommended)
     - [Local from source](#local-from-source)
     - [No installation, direct run from source](#no-installation-direct-run-from-source)
+  - [License](#license)
 
 ## Description
 
@@ -74,3 +75,7 @@ export PYTHONPATH=$(pwd)
 python3 -m poetry install --no-root
 python3 mdocker <arguments>
 ```
+
+## License
+
+[MIT](#license)
