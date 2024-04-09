@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--platforms",
         default=[
-            f"linux/{ccmd.launch('uname -m', get_output=True, quiet=True).replace('x86_64', 'amd64')}"
+            f"linux/{ccmd.launch('uname -m', get_output=True, quiet=True).replace('x86_64', 'amd64')}" # type: ignore
         ],
         help="specify target platforms (e.g., --platforms linux/amd64,linux/arm64)"
     )
