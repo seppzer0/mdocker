@@ -65,7 +65,7 @@ def process_platforms(platforms: str | list[str]) -> list[str]:
 
 
 def main(args: argparse.Namespace) -> None:
-    # for logs to show in order in various CI/CD / Build systems
+    # for logs to show in proper order in various CI/CD / Build systems
     sys.stdout = io.TextIOWrapper(open(sys.stdout.fileno(), "wb", 0), write_through=True)
     validate_env()
     ImageBuilder(
