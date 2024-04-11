@@ -8,6 +8,7 @@ An easy-to-use wrapper for multi-platform Docker image builds.
   - [Contents](#contents)
   - [Description](#description)
   - [Usage](#usage)
+  - [Package Compatibility](#package-compatibility)
   - [Examples](#examples)
   - [Installation](#installation)
     - [From PyPI (recommended)](#from-pypi-recommended)
@@ -24,9 +25,9 @@ This tool was originally designed as a workaround to a [limitation](https://gith
 > [!NOTE]
 > *There are, however, some [workarounds and progress](https://github.com/docker/roadmap/issues/371) towards this issue.*
 
-The amount of target platforms specified for this wrapper will be equal to the amount of tags generated in local cache.
+The amount of target platforms specified for this wrapper is equal to the amount of tags generated in local cache.
 
-E.g., if `linux/arm64` and `linux/amd64` were specified as target platforms for a `demo` image, you will get `demo:arm64` and `demo:amd64` built and stored within your local cache.
+E.g., if `linux/arm64` and `linux/amd64` were specified as target platforms for the `demo` image, you will get `demo:arm64` and `demo:amd64` built and stored within your local Docker cache.
 
 ## Usage
 
@@ -50,11 +51,24 @@ options:
   --push                push image to remote registry
 ```
 
+## Package Compatibility
+
+In some cases, packages for Docker images may not be available across all target platforms.
+E.g., a package "some_package" may be available for amd64, but may not be available for arm64 platform.
+
+Is cases like this, you can define custom installation rules within your Dockerfile itself.
+
+An example of such custom rule usage can be found [here](Dockerfile#L16).
+
+Docker's default back-end (BuildKit) provides built-in variables that can be used for determining target platform set for the current build.
+
+The full list of these variables can be found [here](https://docs.docker.com/reference/dockerfile#automatic-platform-args-in-the-global-scope).
+
 ## Examples
 
-You can try building the Dockerfile in this project with mdocker itself!
+You can try out mdocker with it's own Dockerfile!
 
-The command below will build the image for both `amd64` and `arm64` target architectures:
+The command below will build the `demo` image for both `amd64` and `arm64` target architectures:
 
 ```sh
 python3 -m mdocker demo --platforms linux/amd64,linux/arm64
