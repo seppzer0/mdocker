@@ -19,6 +19,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--context",
         dest="bcontext",
+        default=Path("."),
         help="specify a path to build context"
     )
     parser.add_argument(
@@ -30,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--platforms",
         default=[
-            f"linux/{ccmd.launch('uname -m', get_output=True, quiet=True).replace('x86_64', 'amd64')}"
+            f"linux/{ccmd.launch('uname -m', get_output=True, quiet=True).replace('x86_64', 'amd64')}" # type: ignore
         ],
         help="specify target platforms (e.g., --platforms linux/amd64,linux/arm64)"
     )
@@ -64,7 +65,7 @@ def process_platforms(platforms: str | list[str]) -> list[str]:
 
 
 def main(args: argparse.Namespace) -> None:
-    # for logs to show in order in various CI/CD / Build systems
+    # for logs to show in proper order in various CI/CD / Build systems
     sys.stdout = io.TextIOWrapper(open(sys.stdout.fileno(), "wb", 0), write_through=True)
     validate_env()
     ImageBuilder(
