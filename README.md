@@ -110,4 +110,4 @@ python3 mdocker <arguments>
 
 ## License
 
-[MIT](#license)
+[MIT](LICENSE.md)
