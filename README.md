@@ -56,9 +56,9 @@ options:
 In some cases, packages for Docker images may not be available across all target platforms.
 E.g., a package "some_package" may be available for amd64, but may not be available for arm64 platform.
 
-Is cases like this, you can define custom installation rules within your Dockerfile itself.
+In cases like this, you can define custom installation rules within your Dockerfile itself.
 
-An example of such custom rule usage can be found [here](Dockerfile#L16).
+An example of such custom rule usage can be found [here](https://raw.githubusercontent.com/seppzer0/mdocker/main/Dockerfile#L16).
 
 Docker's default back-end (BuildKit) provides built-in variables that can be used for determining target platform set for the current build.
 
@@ -110,4 +110,4 @@ python3 mdocker <arguments>
 
 ## License
 
-[MIT](LICENSE.md)
+[MIT](https://raw.githubusercontent.com/seppzer0/mdocker/main/LICENSE.md)
